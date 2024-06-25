@@ -1,0 +1,91 @@
+{
+    "agentConfigs": [
+        {
+            "playerID": 0,
+            "skillConfigs": [
+                {
+                    "skillName": "Fireball",
+                    "cooltime": [ 3.0 ],
+                    "range": [ 12 ],
+                    "casttime": [ 0.5 ],
+                    "damage": [ 5000 ]
+                },
+                {
+                    "skillName": "Pyroblast",
+                    "cooltime": [ 5.0 ],
+                    "range": [ 12 ],
+                    "casttime": [ 1.0 ],
+                    "damage": [ 12000 ]
+                }
+            ]
+        },
+        {
+            "playerID": 1,
+            "skillConfigs": [
+                {
+                    "skillName": "Fireball",
+                    "cooltime": [ 3.0 ],
+                    "range": [ 12 ],
+                    "casttime": [ 0.5 ],
+                    "damage": [ 5000 ]
+                },
+                {
+                    "skillName": "Pyroblast",
+                    "cooltime": [ 5.0 ],
+                    "range": [ 12 ],
+                    "casttime": [ 1.0 ],
+                    "damage": [ 12000 ]
+                }
+            ]
+        },
+        {
+            "playerID": 2,
+            "skillConfigs": [
+                {
+                    "skillName": "Fireball",
+                    "cooltime": [ 3.0 ],
+                    "range": [ 12 ],
+                    "casttime": [ 0.5 ],
+                    "damage": [ 5000 ]
+                },
+                {
+                    "skillName": "Pyroblast",
+                    "cooltime": [ 5.0 ],
+                    "range": [ 12 ],
+                    "casttime": [ 1.0 ],
+                    "damage": [ 12000 ]
+                }
+            ]
+        },
+        {
+            "playerID": 3,
+            "skillConfigs": [
+                {
+                    "skillName": "Fireball",
+                    "cooltime": [ 3.0 ],
+                    "range": [ 12 ],
+                    "casttime": [ 0.5 ],
+                    "damage": [ 5000 ]
+                },
+                {
+                    "skillName": "Pyroblast",
+                    "cooltime": [ 5.0 ],
+                    "range": [ 12 ],
+                    "casttime": [ 1.0 ],
+                    "damage": [ 12000 ]
+                }
+            ]
+        },
+        {
+            "playerID": 100,
+            "skillConfigs": [
+                {
+                    "skillName": "PatchwerkMeleeAttack"
+                },
+                {
+                    "skillName": "PatchwerkHatefulStrike"
+                }
+            ]
+        }
+    ]
+}
