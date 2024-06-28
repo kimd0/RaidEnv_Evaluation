@@ -115,7 +115,16 @@ def log_time():
     print(f"[{now}]", end=" ")
 
 
+def make_folders(path_list):
+    for path in path_list:
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+
 if __name__ == '__main__':
+    PATH_List = [CONFIG_PATH, LOG_PATH, RESULT_PATH]
+    make_folders(PATH_List)
+
     generate_config('range', 3.0, 12.0, 0.1)
     run_test()
 
