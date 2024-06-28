@@ -3,24 +3,32 @@ import time
 import os
 import pandas as pd
 import json
-from decimal import Decimal, getcontext
+from decimal import Decimal
+
+BASE_PATH = os.path.dirname(__file__)
+CONFIG_PATH = os.path.join(BASE_PATH, 'config')
+LOG_PATH = os.path.join(BASE_PATH, 'log')
+RESULT_PATH = os.path.join(BASE_PATH, 'result')
+DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default.json')
+MMORPG_EXECUTABLE = 'MMORPG.exe'
+
 
 def run_test():
-    config_path = r'C:\Users\cilab\Desktop\ptester\config'
-    for file in os.listdir(config_path):
-        file_path = os.path.join(config_path, file)
+    for file in os.listdir(CONFIG_PATH):
+        file_path = os.path.join(CONFIG_PATH, file)
 
         if os.path.isfile(file_path):
             log_time()
             print("Running with", file)
-            run_env(file, 1000)
+            run_env(file, 500)
             save_result(file)
     log_time()
     print("Test Done")
     return
 
+
 def generate_config(attribute, start, end, step):
-    with open("default.json", 'r') as file:
+    with open(DEFAULT_CONFIG_FILE, 'r') as file:
         data = json.load(file)
 
     original_value = data['agentConfigs'][0]['skillConfigs'][0][attribute]
@@ -45,10 +53,10 @@ def generate_config(attribute, start, end, step):
 
     log_time()
     print("generating configs : ", new_values)
-    config_path = r'C:\Users\cilab\Desktop\ptester\config'
+
     for value in new_values:
         new_file_name = f"{attribute}_{value[0]}.json"
-        new_file_path = os.path.join(config_path, new_file_name)
+        new_file_path = os.path.join(CONFIG_PATH, new_file_name)
         data['agentConfigs'][0]['skillConfigs'][0][attribute] = value
 
         with open(new_file_path, 'w') as new_file:
@@ -56,14 +64,15 @@ def generate_config(attribute, start, end, step):
         log_time()
         print(new_file_name, "generated.")
 
+
 def run_env(config, episode=1000):
     env = os.environ
-    newpath = r'C:\Users\cilab\Desktop\ptester\build;'+env['PATH']
+    newpath = os.path.join(BASE_PATH, 'build') + ';' + env['PATH']
     env['PATH'] = newpath
-    config_path = ' --configPath C:/Users/cilab/Desktop/ptester/config/' + config
-    log_path = ' --logPath C:/Users/cilab/Desktop/ptester/log/'
+    config_path = f' --configPath {os.path.join(CONFIG_PATH, config)}'
+    log_path = f' --logPath {LOG_PATH}\\'
 
-    process = subprocess.Popen('MMORPG.exe -quit -batchmode -nographics' + config_path + log_path)
+    process = subprocess.Popen(MMORPG_EXECUTABLE + ' -quit -batchmode -nographics' + config_path + log_path)
     time.sleep(100)
     while True:
         if check_log(episode):
@@ -72,39 +81,39 @@ def run_env(config, episode=1000):
             return True
         time.sleep(1)
 
+
 def check_log(length=1000):
-    log_path = r'C:\Users\cilab\Desktop\ptester\log'
-    sorted_files = sorted([f for f in os.listdir(log_path)], reverse=True)
+    sorted_files = sorted([f for f in os.listdir(LOG_PATH)], reverse=True)
     if not sorted_files:
         return False
     log_dir = sorted_files[0]
-    file_path = os.path.join(log_path, log_dir, "gameresult_log.csv")
+    file_path = os.path.join(LOG_PATH, log_dir, "gameresult_log.csv")
     gameresult_log = pd.read_csv(file_path, header=None)
     line_count = len(gameresult_log)
     return line_count >= length
 
-def save_result(config):
-    log_path = r'C:\Users\cilab\Desktop\ptester\log'
-    log_dir = sorted([f for f in os.listdir(log_path)], reverse=True)[0]
-    old_dir_path = os.path.join(log_path, log_dir)
 
-    result_path = r'C:\Users\cilab\Desktop\ptester\result'
+def save_result(config):
+    log_dir = sorted([f for f in os.listdir(LOG_PATH)], reverse=True)[0]
+    old_dir_path = os.path.join(LOG_PATH, log_dir)
+
     parts = config.split('.')
     result_dir = '.'.join(parts[:-1]) if len(parts) > 1 else parts[0]
-    new_dir_path = os.path.join(result_path, result_dir)
+    new_dir_path = os.path.join(RESULT_PATH, result_dir)
 
     os.rename(old_dir_path, new_dir_path)
 
-    config_path = r'C:\Users\cilab\Desktop\ptester\config'
-    old_config_path = os.path.join(config_path, config)
+    old_config_path = os.path.join(CONFIG_PATH, config)
     new_config_path = os.path.join(new_dir_path, config)
     os.rename(old_config_path, new_config_path)
     log_time()
     print("Saved result with", config)
 
+
 def log_time():
-    now = time
-    print("["+now.strftime('%Y-%m-%d %H:%M:%S')+"]", end=" ")
+    now = time.strftime('%Y-%m-%d %H:%M:%S')
+    print(f"[{now}]", end=" ")
+
 
 if __name__ == '__main__':
     generate_config('range', 3.0, 12.0, 0.1)

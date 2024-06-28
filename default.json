@@ -5,17 +5,13 @@
             "skillConfigs": [
                 {
                     "skillName": "Fireball",
-                    "cooltime": [ 3.0 ],
+                    "cooltime": [ 1.5 ],
                     "range": [ 12 ],
-                    "casttime": [ 0.5 ],
-                    "damage": [ 5000 ]
+                    "casttime": [ 2.25 ],
+                    "damage": [ 14704 ]
                 },
                 {
-                    "skillName": "Pyroblast",
-                    "cooltime": [ 5.0 ],
-                    "range": [ 12 ],
-                    "casttime": [ 1.0 ],
-                    "damage": [ 12000 ]
+                    "skillName": "Pyroblast"
                 }
             ]
         },
@@ -23,18 +19,10 @@
             "playerID": 1,
             "skillConfigs": [
                 {
-                    "skillName": "Fireball",
-                    "cooltime": [ 3.0 ],
-                    "range": [ 12 ],
-                    "casttime": [ 0.5 ],
-                    "damage": [ 5000 ]
+                    "skillName": "FlashHeal"
                 },
                 {
-                    "skillName": "Pyroblast",
-                    "cooltime": [ 5.0 ],
-                    "range": [ 12 ],
-                    "casttime": [ 1.0 ],
-                    "damage": [ 12000 ]
+                    "skillName": "PowerWordShield"
                 }
             ]
         },
@@ -42,18 +30,10 @@
             "playerID": 2,
             "skillConfigs": [
                 {
-                    "skillName": "Fireball",
-                    "cooltime": [ 3.0 ],
-                    "range": [ 12 ],
-                    "casttime": [ 0.5 ],
-                    "damage": [ 5000 ]
+                    "skillName": "CrusadorStrike"
                 },
                 {
-                    "skillName": "Pyroblast",
-                    "cooltime": [ 5.0 ],
-                    "range": [ 12 ],
-                    "casttime": [ 1.0 ],
-                    "damage": [ 12000 ]
+                    "skillName": "DivineStorm"
                 }
             ]
         },
@@ -61,18 +41,10 @@
             "playerID": 3,
             "skillConfigs": [
                 {
-                    "skillName": "Fireball",
-                    "cooltime": [ 3.0 ],
-                    "range": [ 12 ],
-                    "casttime": [ 0.5 ],
-                    "damage": [ 5000 ]
+                    "skillName": "HammeroftheRighteous"
                 },
                 {
-                    "skillName": "Pyroblast",
-                    "cooltime": [ 5.0 ],
-                    "range": [ 12 ],
-                    "casttime": [ 1.0 ],
-                    "damage": [ 12000 ]
+                    "skillName": "Consecration"
                 }
             ]
         },

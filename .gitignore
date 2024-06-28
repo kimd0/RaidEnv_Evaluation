@@ -3,3 +3,9 @@
 !config/*
 !log/*
 !result/*
+/.idea
+/build
+/config
+/log
+/result
+/analysis

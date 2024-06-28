@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def analysis_log(log_dir):
-    log_path = r'C:\Users\cilab\Desktop\ptester\result'
+    log_path = os.path.join(os.getcwd(), 'result')
     # Load combat_log
     combat_log = pd.read_csv(os.path.join(log_path, log_dir, "combat_log.csv"), header=None)
     combat_log.columns = ["source", "target", "skill", "damage", "is_critical", "is_backattack",
