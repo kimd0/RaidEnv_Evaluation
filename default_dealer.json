@@ -1,0 +1,68 @@
+{
+    "agentConfigs": [
+        {
+            "playerID": 0,
+            "skillConfigs": [
+                {
+                    "skillName": "Fireball",
+                    "cooltime": [ 1.5 ],
+                    "range": [ 12 ],
+                    "casttime": [ 2.25 ],
+                    "damage": [ 14704 ]
+                },
+                {
+                    "skillName": "Pyroblast"
+                }
+            ]
+        },
+        {
+            "playerID": 1,
+            "skillConfigs": [
+                {
+                    "skillName": "FlashHeal"
+                },
+                {
+                    "skillName": "PowerWordShield"
+                }
+            ]
+        },
+        {
+            "playerID": 2,
+            "StatusConfigs": [
+                {
+                "healMax" : [ 32350 ],
+                "armor" : [ 28476 ]
+                }],
+            "skillConfigs": [
+                {
+                    "skillName": "CrusadorStrike"
+                },
+                {
+                    "skillName": "DivineStorm"
+                }
+            ]
+        },
+        {
+            "playerID": 3,
+            "skillConfigs": [
+                {
+                    "skillName": "HammeroftheRighteous"
+                },
+                {
+                    "skillName": "Consecration"
+                }
+            ]
+        },
+        {
+            "playerID": 100,
+            "skillConfigs": [
+                {
+                    "skillName": "PatchwerkMeleeAttack"
+                },
+                {
+                    "skillName": "PatchwerkHatefulStrike"
+                }
+            ]
+        }
+    ]
+}
