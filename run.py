@@ -13,11 +13,11 @@ DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default.json')
 MMORPG_EXECUTABLE = 'MMORPG.exe'
 
 
-def run_test():
+def run_test(attribute):
     for file in os.listdir(CONFIG_PATH):
         file_path = os.path.join(CONFIG_PATH, file)
 
-        if os.path.isfile(file_path):
+        if os.path.isfile(file_path) and (attribute in file):
             log_time()
             print("Running with", file)
             run_env(file, 500)
