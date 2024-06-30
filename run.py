@@ -27,11 +27,11 @@ def run_test():
     return
 
 
-def generate_config(attribute, start, end, step):
+def generate_config(attribute, start, end, step, target_config, target_agent):
     with open(DEFAULT_CONFIG_FILE, 'r') as file:
         data = json.load(file)
 
-    original_value = data['agentConfigs'][0]['skillConfigs'][0][attribute]
+    original_value = data['agentConfigs'][target_agent][target_config][0][attribute]
     if isinstance(original_value, list):
         original_value = original_value[0]
     original_value = Decimal(str(original_value))
@@ -125,14 +125,14 @@ if __name__ == '__main__':
     PATH_List = [CONFIG_PATH, LOG_PATH, RESULT_PATH]
     make_folders(PATH_List)
 
-    generate_config('range', 3.0, 12.0, 0.1)
+    generate_config('range', start=3.0, end=12.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
 
-    generate_config('casttime', 0.0, 10.0, 0.1)
+    generate_config('casttime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
 
-    generate_config('cooltime', 0.0, 10.0, 0.1)
+    generate_config('cooltime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
 
-    generate_config('damage', 0.0, 5.0, 0.1)
+    generate_config('damage', start=0.0, end=5.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
