@@ -48,7 +48,9 @@ def run_analysis(attributename):
     df.reset_index(drop=True, inplace=True)
     df.set_index('variable', inplace=True)
 
-    result_csv_path = os.path.join(os.getcwd(), 'analysis', f"{attributename}_results.csv")
+    result_path = os.path.join(os.getcwd(), 'analysis')
+    make_folder(result_path)
+    result_csv_path = os.path.join(result_path, f"{attributename}_results.csv")
     df.to_csv(result_csv_path)
 
     show_plot(result_csv_path)
@@ -75,6 +77,12 @@ def show_plot(data_path):
 
     plt.tight_layout()
     plt.show()
+
+
+def make_folder(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
 
 if __name__ == '__main__':
     run_analysis('casttime')

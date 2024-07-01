@@ -13,11 +13,11 @@ DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default.json')
 MMORPG_EXECUTABLE = 'MMORPG.exe'
 
 
-def run_test():
+def run_test(attribute):
     for file in os.listdir(CONFIG_PATH):
         file_path = os.path.join(CONFIG_PATH, file)
 
-        if os.path.isfile(file_path):
+        if os.path.isfile(file_path) and (attribute in file):
             log_time()
             print("Running with", file)
             run_env(file, 500)
@@ -27,11 +27,11 @@ def run_test():
     return
 
 
-def generate_config(attribute, start, end, step):
+def generate_config(attribute, start, end, step, target_config, target_agent):
     with open(DEFAULT_CONFIG_FILE, 'r') as file:
         data = json.load(file)
 
-    original_value = data['agentConfigs'][0]['skillConfigs'][0][attribute]
+    original_value = data['agentConfigs'][target_agent][target_config][0][attribute]
     if isinstance(original_value, list):
         original_value = original_value[0]
     original_value = Decimal(str(original_value))
@@ -57,7 +57,7 @@ def generate_config(attribute, start, end, step):
     for value in new_values:
         new_file_name = f"{attribute}_{value[0]}.json"
         new_file_path = os.path.join(CONFIG_PATH, new_file_name)
-        data['agentConfigs'][0]['skillConfigs'][0][attribute] = value
+        data['agentConfigs'][target_agent][target_config][0][attribute] = value
 
         with open(new_file_path, 'w') as new_file:
             json.dump(data, new_file, indent=4)
@@ -115,15 +115,30 @@ def log_time():
     print(f"[{now}]", end=" ")
 
 
+def make_folders(path_list):
+    for path in path_list:
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+
 if __name__ == '__main__':
-    generate_config('range', 3.0, 12.0, 0.1)
+    PATH_List = [CONFIG_PATH, LOG_PATH, RESULT_PATH]
+    make_folders(PATH_List)
+
+    generate_config('range', start=3.0, end=12.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
 
-    generate_config('casttime', 0.0, 10.0, 0.1)
+    generate_config('casttime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
 
-    generate_config('cooltime', 0.0, 10.0, 0.1)
+    generate_config('cooltime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
 
-    generate_config('damage', 0.0, 5.0, 0.1)
+    generate_config('damage', start=0.0, end=5.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
+
+    generate_config('healMax', start=12350, end=52350, step=1000, target_config="StatusConfigs", target_agent=2)  # default 32,350
+    run_test('healMax')
+
+    generate_config('armor', start=18476, end=38476, step=500, target_config="StatusConfigs", target_agent=2)  # default 28,476
+    run_test('armor')
