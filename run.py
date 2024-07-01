@@ -136,3 +136,9 @@ if __name__ == '__main__':
 
     generate_config('damage', start=0.0, end=5.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
+
+    generate_config('healMax', start=12350, end=52350, step=1000, target_config="StatusConfigs", target_agent=2)  # default 32,350
+    run_test('healMax')
+
+    generate_config('armor', start=18476, end=38476, step=500, target_config="StatusConfigs", target_agent=2)  # default 28,476
+    run_test('armor')
