@@ -61,7 +61,10 @@ def generate_config(attribute, start, end, step, target_config, target_agent):
     for value in new_values:
         new_file_name = f"{attribute}_{value[0]}.json"
         new_file_path = os.path.join(CONFIG_PATH, new_file_name)
-        data['agentConfigs'][target_agent][target_config][0][attribute] = value
+        if target_config == "statusConfig":
+            data['agentConfigs'][target_agent][target_config][attribute] = value
+        elif target_config == "skillConfigs":
+            data['agentConfigs'][target_agent][target_config][0][attribute] = value
 
         with open(new_file_path, 'w') as new_file:
             json.dump(data, new_file, indent=4)
