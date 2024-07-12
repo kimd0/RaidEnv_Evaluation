@@ -2,12 +2,12 @@
     "agentConfigs": [
         {
             "playerID": 0,
-            "StatusConfigs": [
+            "statusConfig":
                 {
                 "healthMax" : [ 14310 ],
                 "armor" : [ 3699 ],
                 "moveSpeed" : [ 1 ]
-                }],
+                },
             "skillConfigs": [
                 {
                     "skillName": "Fireball",
@@ -27,12 +27,12 @@
         },
         {
             "playerID": 1,
-            "StatusConfigs": [
+            "statusConfig":
                 {
                 "healthMax" : [ 16480 ],
                 "armor" : [ 8734 ],
                 "moveSpeed" : [ 1 ]
-                }],
+                },
             "skillConfigs": [
                 {
                     "skillName": "FlashHeal",
@@ -52,12 +52,12 @@
         },
         {
             "playerID": 2,
-            "StatusConfigs": [
+            "statusConfig":
                 {
                 "healthMax" : [ 32350 ],
                 "armor" : [ 28476 ],
                 "moveSpeed" : [ 1 ]
-                }],
+                },
             "skillConfigs": [
                 {
                     "skillName": "CrusadorStrike",
@@ -77,12 +77,12 @@
         },
         {
             "playerID": 3,
-            "StatusConfigs": [
+            "statusConfig":
                 {
                 "healthMax" : [ 32150 ],
                 "armor" : [ 28176 ],
                 "moveSpeed" : [ 1 ]
-                }],
+                },
             "skillConfigs": [
                 {
                     "skillName": "HammeroftheRighteous",
@@ -102,12 +102,12 @@
         },
         {
             "playerID": 100,
-            "StatusConfigs": [
+            "statusConfig":
                 {
                 "healthMax" : [ 231470 ],
                 "armor" : [ 0 ],
                 "moveSpeed" : [ 0.3 ]
-                }],
+                },
             "skillConfigs": [
                 {
                     "skillName": "PatchwerkMeleeAttack",
