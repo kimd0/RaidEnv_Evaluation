@@ -9,7 +9,7 @@ BASE_PATH = os.path.dirname(__file__)
 CONFIG_PATH = os.path.join(BASE_PATH, 'config')
 LOG_PATH = os.path.join(BASE_PATH, 'log')
 RESULT_PATH = os.path.join(BASE_PATH, 'result')
-DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default_dealer.json') # for dealer
+DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default_dealer.json')  # for dealer
 MMORPG_EXECUTABLE = 'MMORPG.exe'
 
 
@@ -31,7 +31,11 @@ def generate_config(attribute, start, end, step, target_config, target_agent):
     with open(DEFAULT_CONFIG_FILE, 'r') as file:
         data = json.load(file)
 
-    original_value = data['agentConfigs'][target_agent][target_config][0][attribute]
+    if target_config == "statusConfig":
+        original_value = data['agentConfigs'][target_agent][target_config][attribute]
+    elif target_config == "skillConfigs":
+        original_value = data['agentConfigs'][target_agent][target_config][0][attribute]
+
     if isinstance(original_value, list):
         original_value = original_value[0]
     original_value = Decimal(str(original_value))
@@ -131,14 +135,11 @@ if __name__ == '__main__':
     generate_config('casttime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
     run_test()
 
-    generate_config('cooltime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test()
+    generate_config('healthMax', start=12350, end=52350, step=1000, target_config="statusConfig", target_agent=2)  # default 32,350
+    run_test('healthMax')
 
-    generate_config('damage', start=0.0, end=5.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test()
-
-    generate_config('healMax', start=12350, end=52350, step=1000, target_config="StatusConfigs", target_agent=2)  # default 32,350
-    run_test('healMax')
-
-    generate_config('armor', start=18476, end=38476, step=500, target_config="StatusConfigs", target_agent=2)  # default 28,476
+    generate_config('armor', start=18476, end=38476, step=500, target_config="statusConfig", target_agent=2)  # default 28,476
     run_test('armor')
+
+    generate_config('moveSpeed', start=0.3, end=2.0, step=0.05, target_config="statusConfig", target_agent=2)  # default 1
+    run_test('moveSpeed')
