@@ -2,6 +2,12 @@
     "agentConfigs": [
         {
             "playerID": 0,
+            "StatusConfigs": [
+                {
+                "healthMax" : [ 14310 ],
+                "armor" : [ 3699 ],
+                "moveSpeed" : [ 1 ]
+                }],
             "skillConfigs": [
                 {
                     "skillName": "Fireball",
@@ -11,18 +17,36 @@
                     "damage": [ 14704 ]
                 },
                 {
-                    "skillName": "Pyroblast"
+                    "skillName": "Pyroblast",
+                    "cooltime": [ 1.5 ],
+                    "range": [ 12 ],
+                    "casttime": [ 4 ],
+                    "damage": [ 24772 ]
                 }
             ]
         },
         {
             "playerID": 1,
+            "StatusConfigs": [
+                {
+                "healthMax" : [ 16480 ],
+                "armor" : [ 8734 ],
+                "moveSpeed" : [ 1 ]
+                }],
             "skillConfigs": [
                 {
-                    "skillName": "FlashHeal"
+                    "skillName": "FlashHeal",
+                    "cooltime": [ 2 ],
+                    "range": [ 12 ],
+                    "casttime": [ 1.5 ],
+                    "damage": [ 6000 ]
                 },
                 {
-                    "skillName": "PowerWordShield"
+                    "skillName": "PowerWordShield",
+                    "cooltime": [ 7.5 ],
+                    "range": [ 12 ],
+                    "casttime": [ 0 ],
+                    "damage": [ 9000 ]
                 }
             ]
         },
@@ -30,37 +54,74 @@
             "playerID": 2,
             "StatusConfigs": [
                 {
-                "healMax" : [ 32350 ],
-                "armor" : [ 28476 ]
+                "healthMax" : [ 32350 ],
+                "armor" : [ 28476 ],
+                "moveSpeed" : [ 1 ]
                 }],
             "skillConfigs": [
                 {
-                    "skillName": "CrusadorStrike"
+                    "skillName": "CrusadorStrike",
+                    "cooltime": [ 6 ],
+                    "range": [ 3 ],
+                    "casttime": [ 0 ],
+                    "damage": [ 4813 ]
                 },
                 {
-                    "skillName": "DivineStorm"
+                    "skillName": "DivineStorm",
+                    "cooltime": [ 6 ],
+                    "range": [ 3 ],
+                    "casttime": [ 0 ],
+                    "damage": [ 6274 ]
                 }
             ]
         },
         {
             "playerID": 3,
+            "StatusConfigs": [
+                {
+                "healthMax" : [ 32150 ],
+                "armor" : [ 28176 ],
+                "moveSpeed" : [ 1 ]
+                }],
             "skillConfigs": [
                 {
-                    "skillName": "HammeroftheRighteous"
+                    "skillName": "HammeroftheRighteous",
+                    "cooltime": [ 5 ],
+                    "range": [ 5 ],
+                    "casttime": [ 0 ],
+                    "damage": [ 7276 ]
                 },
                 {
-                    "skillName": "Consecration"
+                    "skillName": "Consecration",
+                    "cooltime": [ 9 ],
+                    "range": [ 4 ],
+                    "casttime": [ 0 ],
+                    "damage": [ 24 ]
                 }
             ]
         },
         {
             "playerID": 100,
+            "StatusConfigs": [
+                {
+                "healthMax" : [ 231470 ],
+                "armor" : [ 0 ],
+                "moveSpeed" : [ 0.3 ]
+                }],
             "skillConfigs": [
                 {
-                    "skillName": "PatchwerkMeleeAttack"
+                    "skillName": "PatchwerkMeleeAttack",
+                    "cooltime": [ 1 ],
+                    "range": [ 3 ],
+                    "casttime": [ 0 ],
+                    "damage": [ 13500 ]
                 },
                 {
-                    "skillName": "PatchwerkHatefulStrike"
+                    "skillName": "PatchwerkHatefulStrike",
+                    "cooltime": [ 2 ],
+                    "range": [ 6 ],
+                    "casttime": [ 0 ],
+                    "damage": [ 26000 ]
                 }
             ]
         }

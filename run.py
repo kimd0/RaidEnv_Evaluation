@@ -9,7 +9,7 @@ BASE_PATH = os.path.dirname(__file__)
 CONFIG_PATH = os.path.join(BASE_PATH, 'config')
 LOG_PATH = os.path.join(BASE_PATH, 'log')
 RESULT_PATH = os.path.join(BASE_PATH, 'result')
-DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default.json')
+DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default_dealer.json') # for dealer
 MMORPG_EXECUTABLE = 'MMORPG.exe'
 
 
