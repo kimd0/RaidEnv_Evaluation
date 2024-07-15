@@ -89,5 +89,8 @@ if __name__ == '__main__':
     run_analysis('cooltime')
     run_analysis('damage')
     run_analysis('range')
+    run_analysis('healthMax')
+    run_analysis('armor')
+    run_analysis('moveSpeed')
 
     #analysis_log('casttime_0.0')

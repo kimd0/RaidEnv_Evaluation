@@ -13,14 +13,14 @@ DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default_dealer.json')  # for deal
 MMORPG_EXECUTABLE = 'MMORPG.exe'
 
 
-def run_test(attribute):
+def run_test(attribute, epi_num):
     for file in os.listdir(CONFIG_PATH):
         file_path = os.path.join(CONFIG_PATH, file)
 
         if os.path.isfile(file_path) and (attribute in file):
             log_time()
             print("Running with", file)
-            run_env(file, 500)
+            run_env(file, epi_num)
             save_result(file)
     log_time()
     print("Test Done")
@@ -133,16 +133,22 @@ if __name__ == '__main__':
     make_folders(PATH_List)
 
     generate_config('range', start=3.0, end=12.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test()
+    run_test('range', epi_num=300)
 
     generate_config('casttime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test()
+    run_test('casttime', epi_num=300)
+
+    generate_config('cooltime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
+    run_test('cooltime', epi_num=300)
+
+    generate_config('damage', start=0.0, end=5.0, step=0.1, target_config='skillConfigs', target_agent=0)
+    run_test('damage', epi_num=300)
 
     generate_config('healthMax', start=12350, end=52350, step=1000, target_config="statusConfig", target_agent=2)  # default 32,350
-    run_test('healthMax')
+    run_test('healthMax', epi_num=300)
 
     generate_config('armor', start=18476, end=38476, step=500, target_config="statusConfig", target_agent=2)  # default 28,476
-    run_test('armor')
+    run_test('armor', epi_num=300)
 
     generate_config('moveSpeed', start=0.3, end=2.0, step=0.05, target_config="statusConfig", target_agent=2)  # default 1
-    run_test('moveSpeed')
+    run_test('moveSpeed', epi_num=300)
