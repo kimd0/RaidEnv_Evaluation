@@ -9,18 +9,18 @@ BASE_PATH = os.path.dirname(__file__)
 CONFIG_PATH = os.path.join(BASE_PATH, 'config')
 LOG_PATH = os.path.join(BASE_PATH, 'log')
 RESULT_PATH = os.path.join(BASE_PATH, 'result')
-DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default.json')
+DEFAULT_CONFIG_FILE = os.path.join(BASE_PATH, 'default_dealer.json')  # for dealer
 MMORPG_EXECUTABLE = 'MMORPG.exe'
 
 
-def run_test(attribute):
+def run_test(attribute, epi_num):
     for file in os.listdir(CONFIG_PATH):
         file_path = os.path.join(CONFIG_PATH, file)
 
         if os.path.isfile(file_path) and (attribute in file):
             log_time()
             print("Running with", file)
-            run_env(file, 500)
+            run_env(file, epi_num)
             save_result(file)
     log_time()
     print("Test Done")
@@ -31,7 +31,11 @@ def generate_config(attribute, start, end, step, target_config, target_agent):
     with open(DEFAULT_CONFIG_FILE, 'r') as file:
         data = json.load(file)
 
-    original_value = data['agentConfigs'][target_agent][target_config][0][attribute]
+    if target_config == "statusConfig":
+        original_value = data['agentConfigs'][target_agent][target_config][attribute]
+    elif target_config == "skillConfigs":
+        original_value = data['agentConfigs'][target_agent][target_config][0][attribute]
+
     if isinstance(original_value, list):
         original_value = original_value[0]
     original_value = Decimal(str(original_value))
@@ -57,7 +61,10 @@ def generate_config(attribute, start, end, step, target_config, target_agent):
     for value in new_values:
         new_file_name = f"{attribute}_{value[0]}.json"
         new_file_path = os.path.join(CONFIG_PATH, new_file_name)
-        data['agentConfigs'][target_agent][target_config][0][attribute] = value
+        if target_config == "statusConfig":
+            data['agentConfigs'][target_agent][target_config][attribute] = value
+        elif target_config == "skillConfigs":
+            data['agentConfigs'][target_agent][target_config][0][attribute] = value
 
         with open(new_file_path, 'w') as new_file:
             json.dump(data, new_file, indent=4)
@@ -126,19 +133,22 @@ if __name__ == '__main__':
     make_folders(PATH_List)
 
     generate_config('range', start=3.0, end=12.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test()
+    run_test('range', epi_num=300)
 
     generate_config('casttime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test()
+    run_test('casttime', epi_num=300)
 
     generate_config('cooltime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test()
+    run_test('cooltime', epi_num=300)
 
     generate_config('damage', start=0.0, end=5.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test()
+    run_test('damage', epi_num=300)
 
-    generate_config('healMax', start=12350, end=52350, step=1000, target_config="StatusConfigs", target_agent=2)  # default 32,350
-    run_test('healMax')
+    generate_config('healthMax', start=12350, end=52350, step=1000, target_config="statusConfig", target_agent=2)  # default 32,350
+    run_test('healthMax', epi_num=300)
 
-    generate_config('armor', start=18476, end=38476, step=500, target_config="StatusConfigs", target_agent=2)  # default 28,476
-    run_test('armor')
+    generate_config('armor', start=18476, end=38476, step=500, target_config="statusConfig", target_agent=2)  # default 28,476
+    run_test('armor', epi_num=300)
+
+    generate_config('moveSpeed', start=0.3, end=2.0, step=0.05, target_config="statusConfig", target_agent=2)  # default 1
+    run_test('moveSpeed', epi_num=300)
