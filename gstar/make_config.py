@@ -60,14 +60,14 @@ class ConfigManager:
             self.write_json(target_file_name, new_data)
 
 
-def make_folders(path):
+def make_folder(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
 
 if __name__ == "__main__":
     args = parse_args()
-    make_folders(args.save_path)
+    make_folder(args.save_path)
     # Initialize ConfigManager
     manager = ConfigManager(args)
 
