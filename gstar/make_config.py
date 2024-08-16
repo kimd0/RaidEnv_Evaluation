@@ -3,12 +3,12 @@ import copy
 import argparse
 import itertools
 from tqdm import tqdm
-
+import os
 
 def parse_args():
     parser = argparse.ArgumentParser('make gstar_config')
     parser.add_argument('--json_path', type=str, default="./json/default_dealer_skill1.json")
-    parser.add_argument('--save_path', type=str, default="./config")
+    parser.add_argument('--save_path', type=str, default="./config/dealer_skill1")
     parser.add_argument('--agent_index', type=int, default=2)
     parser.add_argument('--t_skill_num', type=int, default=0)
 
@@ -60,9 +60,14 @@ class ConfigManager:
             self.write_json(target_file_name, new_data)
 
 
+def make_folders(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
 if __name__ == "__main__":
     args = parse_args()
-
+    make_folders(args.save_path)
     # Initialize ConfigManager
     manager = ConfigManager(args)
 
