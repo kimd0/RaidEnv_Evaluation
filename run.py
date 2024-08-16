@@ -80,13 +80,13 @@ def run_env(config, episode=1000):
     log_path = f' --logPath {LOG_PATH}\\'
 
     process = subprocess.Popen(MMORPG_EXECUTABLE + ' -quit -batchmode -nographics' + config_path + log_path)
-    time.sleep(100)
+    time.sleep(10 + episode / 5)
     while True:
         if check_log(episode):
             process.terminate()
             process.wait()
             return True
-        time.sleep(1)
+        time.sleep(0.01)
 
 
 def check_log(length=1000):
@@ -132,20 +132,20 @@ if __name__ == '__main__':
     PATH_List = [CONFIG_PATH, LOG_PATH, RESULT_PATH]
     make_folders(PATH_List)
 
-    generate_config('range', start=3.0, end=12.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test('range', epi_num=300)
-
-    generate_config('casttime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test('casttime', epi_num=300)
-
-    generate_config('cooltime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test('cooltime', epi_num=300)
-
-    generate_config('damage', start=0.0, end=5.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    run_test('damage', epi_num=300)
+    # generate_config('range', start=3.0, end=12.0, step=0.1, target_config='skillConfigs', target_agent=0)
+    # run_test('range', epi_num=300)
+    #
+    # generate_config('casttime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
+    # run_test('casttime', epi_num=300)
+    #
+    # generate_config('cooltime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
+    # run_test('cooltime', epi_num=300)
+    #
+    # generate_config('damage', start=0.0, end=5.0, step=0.1, target_config='skillConfigs', target_agent=0)
+    # run_test('damage', epi_num=300)
 
     generate_config('healthMax', start=12350, end=52350, step=1000, target_config="statusConfig", target_agent=2)  # default 32,350
-    run_test('healthMax', epi_num=300)
+    run_test('healthMax', epi_num=10)
 
     generate_config('armor', start=18476, end=38476, step=500, target_config="statusConfig", target_agent=2)  # default 28,476
     run_test('armor', epi_num=300)
