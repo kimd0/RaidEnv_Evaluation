@@ -50,16 +50,16 @@ class MMORPGTestRunner:
         print("Test Done")
 
     def run_env(self, config, episode=100):
-        env = os.environ.copy()
+        env = os.environ
         newpath = self.build_path + ';' + env['PATH']
         env['PATH'] = newpath
         config_path = f' --configPath {os.path.join(self.config_path, config)}'
-        log_path = f' --logPath {self.log_path}'
+        log_path = f' --logPath {self.log_path}\\'
 
         if self.os == "linux":
             command = [self.build_exe_path, '-quit', '-batchmode', '-nographics', config_path, log_path]
         elif self.os == "win":
-            command = ['MMORPG.x86_64' + ' -quit -batchmode -nographics' + config_path + log_path]
+            command = 'MMORPG.exe' + ' -quit -batchmode -nographics' + config_path + log_path
 
         # window : MMORPG.exe # linux : MMORPG.x86_64
         process = subprocess.Popen(command)
