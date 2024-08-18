@@ -51,7 +51,8 @@ class MMORPGTestRunner:
         config_path = f' --configPath {os.path.join(self.config_path, config)}'
         log_path = f' --logPath {self.log_path}\\'
 
-        process = subprocess.Popen('MMORPG.exe' + ' -quit -batchmode -nographics' + config_path + log_path)
+        # window : MMORPG.exe # linux : MMORPG.x86_64,
+        process = subprocess.Popen('MMORPG.x86_64' + ' -quit -batchmode -nographics' + config_path + log_path)
         time.sleep(10 + episode / 5)
         while True:
             if self.check_log(episode):
