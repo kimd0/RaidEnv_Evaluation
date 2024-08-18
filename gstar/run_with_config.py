@@ -11,6 +11,8 @@ def parse_args():
     parser.add_argument('--log_path', type=str, default="./log")
     parser.add_argument('--result_path', type=str, default="./result")
     parser.add_argument('--build_path', type=str, default="../build")
+    parser.add_argument('--slice_index', type=str, default=4)
+    parser.add_argument('--epi_num', type=str, default=500)
 
     return parser.parse_args()
 
@@ -21,15 +23,23 @@ class MMORPGTestRunner:
         self.log_path = args.log_path
         self.result_path = args.result_path
         self.build_path = args.build_path
+        self.slice_index = args.slice_index
+        self.epi_num = args.epi_num
 
-    def run_test(self, epi_num):
-        for file in os.listdir(self.config_path):
+    def run_test(self):
+
+        config_list = sorted(os.listdir(self.config_path))
+        slice_size = len(config_list) // 4
+        start = self.slice_index * slice_size
+        end = start + slice_size if self.slice_index < 4 - 1 else len(config_list)
+
+        for file in config_list[start:end]:
             file_path = os.path.join(self.config_path, file)
 
             if os.path.isfile(file_path):
                 self.log_time()
                 print("Running with", file)
-                self.run_env(file, epi_num)
+                self.run_env(file, self.epi_num)
                 self.save_result(file)
         self.log_time()
         print("Test Done")
@@ -92,6 +102,6 @@ if __name__ == '__main__':
     test_runner = MMORPGTestRunner(args)
     # make folders
     folder_list = [args.log_path, args.result_path]
-    test_runner.make_folders()
+    test_runner.make_folders(folder_list)
     # Run the test
-    test_runner.run_test(epi_num=100)
+    test_runner.run_test()
