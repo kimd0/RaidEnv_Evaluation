@@ -8,7 +8,7 @@ import os
 def parse_args():
     parser = argparse.ArgumentParser('make gstar_config')
     parser.add_argument('--json_path', type=str, default="./json/default_dealer_skill1.json")
-    parser.add_argument('--save_path', type=str, default="./config/dealer_skill1")
+    parser.add_argument('--save_path', type=str, default="./config/dealer_skill1/")
     parser.add_argument('--agent_index', type=int, default=2)
     parser.add_argument('--t_skill_num', type=int, default=0)
 
@@ -56,7 +56,7 @@ class ConfigManager:
             new_data['agentConfigs'][self.args.agent_index]['skillConfigs'][self.args.t_skill_num]["casttime"] = [cast_V]
             new_data['agentConfigs'][self.args.agent_index]['skillConfigs'][self.args.t_skill_num]["damage"] = [damage_V]
 
-            target_file_name = f'{self.target_directory}\\config_{i:05}.json'
+            target_file_name = f'{self.target_directory}/config_{i:05}.json'
             self.write_json(target_file_name, new_data)
 
 

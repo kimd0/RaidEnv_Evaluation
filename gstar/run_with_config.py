@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import argparse
 import shutil
+from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser('make gstar_config')
@@ -11,8 +12,10 @@ def parse_args():
     parser.add_argument('--log_path', type=str, default="./log")
     parser.add_argument('--result_path', type=str, default="./result")
     parser.add_argument('--build_path', type=str, default="../build")
+    parser.add_argument('--build_exe_path', type=str, default='/app/build_linux/MMORPG.x86_64')
     parser.add_argument('--slice_index', type=int, default=0)
-    parser.add_argument('--epi_num', type=int, default=300)
+    parser.add_argument('--epi_num', type=int, default=100)
+    parser.add_argument('--os', type=str, default='linux', choices=['linux', 'win'])
 
     return parser.parse_args()
 
@@ -23,8 +26,10 @@ class MMORPGTestRunner:
         self.log_path = args.log_path
         self.result_path = args.result_path
         self.build_path = args.build_path
+        self.build_exe_path = args.build_exe_path
         self.slice_index = args.slice_index
         self.epi_num = args.epi_num
+        self.os = args.os
 
     def run_test(self):
 
@@ -33,7 +38,7 @@ class MMORPGTestRunner:
         start = self.slice_index * slice_size
         end = start + slice_size if self.slice_index < 4 - 1 else len(config_list)
 
-        for file in config_list[start:end]:
+        for file in tqdm(config_list[start:end]):
             file_path = os.path.join(self.config_path, file)
 
             if os.path.isfile(file_path):
@@ -45,14 +50,19 @@ class MMORPGTestRunner:
         print("Test Done")
 
     def run_env(self, config, episode=100):
-        env = os.environ
+        env = os.environ.copy()
         newpath = self.build_path + ';' + env['PATH']
         env['PATH'] = newpath
         config_path = f' --configPath {os.path.join(self.config_path, config)}'
-        log_path = f' --logPath {self.log_path}\\'
+        log_path = f' --logPath {self.log_path}'
+
+        if self.os == "linux":
+            command = [self.build_exe_path, '-quit', '-batchmode', '-nographics', config_path, log_path]
+        elif self.os == "win":
+            command = ['MMORPG.x86_64' + ' -quit -batchmode -nographics' + config_path + log_path]
 
         # window : MMORPG.exe # linux : MMORPG.x86_64
-        process = subprocess.Popen('MMORPG.x86_64' + ' -quit -batchmode -nographics' + config_path + log_path)
+        process = subprocess.Popen(command)
         time.sleep(10 + episode / 5)
         while True:
             if self.check_log(episode):
