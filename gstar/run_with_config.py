@@ -11,8 +11,8 @@ def parse_args():
     parser.add_argument('--log_path', type=str, default="./log")
     parser.add_argument('--result_path', type=str, default="./result")
     parser.add_argument('--build_path', type=str, default="../build")
-    parser.add_argument('--slice_index', type=str, default=4)
-    parser.add_argument('--epi_num', type=str, default=500)
+    parser.add_argument('--slice_index', type=str, default=0)
+    parser.add_argument('--epi_num', type=str, default=300)
 
     return parser.parse_args()
 
