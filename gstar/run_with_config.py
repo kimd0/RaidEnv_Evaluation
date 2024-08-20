@@ -5,6 +5,7 @@ import pandas as pd
 import argparse
 import shutil
 from tqdm import tqdm
+import platform
 
 def parse_args():
     parser = argparse.ArgumentParser('make gstar_config')
@@ -15,7 +16,6 @@ def parse_args():
     parser.add_argument('--build_exe_path', type=str, default='/app/build_linux/MMORPG.x86_64')
     parser.add_argument('--slice_index', type=int, default=0)
     parser.add_argument('--epi_num', type=int, default=100)
-    parser.add_argument('--os', type=str, default='linux', choices=['linux', 'win'])
 
     return parser.parse_args()
 
@@ -29,7 +29,7 @@ class MMORPGTestRunner:
         self.build_exe_path = args.build_exe_path
         self.slice_index = args.slice_index
         self.epi_num = args.epi_num
-        self.os = args.os
+        self.os_type = platform.system().lower()
 
     def run_test(self):
 
@@ -55,13 +55,15 @@ class MMORPGTestRunner:
         env['PATH'] = newpath
         config_path = ['--configPath', os.path.join(self.config_path, config)]
         log_path = ['--logPath', self.log_path]
-        if self.os == "linux":
+        if self.os_type == "linux":
             command = [self.build_exe_path, '-quit', '-batchmode', '-nographics']
             command += config_path + log_path
-        elif self.os == "win":
+        elif self.os_type == "windows":
             command = 'MMORPG.exe' + ' -quit -batchmode -nographics'
             for arg in config_path + log_path:
                 command += ' ' + arg
+        else:
+            raise ValueError("Unsupported OS type, only support windows and linux")
 
         # window : MMORPG.exe # linux : MMORPG.x86_64
         process = subprocess.Popen(command)
