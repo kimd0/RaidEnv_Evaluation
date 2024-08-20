@@ -53,13 +53,15 @@ class MMORPGTestRunner:
         env = os.environ
         newpath = self.build_path + ';' + env['PATH']
         env['PATH'] = newpath
-        config_path = f' --configPath {os.path.join(self.config_path, config)}'
-        log_path = f' --logPath {self.log_path}\\'
-
+        config_path = ['--configPath', os.path.join(self.config_path, config)]
+        log_path = ['--logPath', self.log_path]
         if self.os == "linux":
-            command = [self.build_exe_path, '-quit', '-batchmode', '-nographics', config_path, log_path]
+            command = [self.build_exe_path, '-quit', '-batchmode', '-nographics']
+            command += config_path + log_path
         elif self.os == "win":
-            command = 'MMORPG.exe' + ' -quit -batchmode -nographics' + config_path + log_path
+            command = 'MMORPG.exe' + ' -quit -batchmode -nographics'
+            for arg in config_path + log_path:
+                command += ' ' + arg
 
         # window : MMORPG.exe # linux : MMORPG.x86_64
         process = subprocess.Popen(command)
