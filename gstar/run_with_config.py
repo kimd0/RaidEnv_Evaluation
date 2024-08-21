@@ -70,7 +70,6 @@ class MMORPGTestRunner:
         else:
             raise ValueError("Unsupported OS type, only support windows and linux")
 
-        # window : MMORPG.exe # linux : MMORPG.x86_64
         process = subprocess.Popen(command)
         log_dir = self.get_log()
 
@@ -85,10 +84,11 @@ class MMORPGTestRunner:
                     process.terminate()
                     process.wait()
                     return log_dir
+
                 time.sleep(0.1)
 
     def check_log_length(self, log_dir):
-        file_path = os.path.join(self.log_path, log_dir, "gameresult_log.csv")
+        file_path = os.path.join(log_dir, "gameresult_log.csv")
         gameresult_log = pd.read_csv(file_path, header=None)
         line_count = len(gameresult_log)
         return line_count
@@ -115,7 +115,7 @@ class MMORPGTestRunner:
             time.sleep(0.1)
 
     def save_result(self, log_dir, config):
-        old_dir_path = os.path.join(self.log_path, log_dir)
+        old_dir_path = log_dir
 
         parts = config.split('.')
         result_dir = '.'.join(parts[:-1]) if len(parts) > 1 else parts[0]
