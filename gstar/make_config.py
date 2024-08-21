@@ -1,3 +1,5 @@
+import numpy as np
+
 import json
 import copy
 import argparse
@@ -16,9 +18,9 @@ def parse_args():
 
 class ConfigManager:
     def __init__(self, args):
-        self.args = args
         self.source_file_name = args.json_path
         self.target_directory = os.path.join("./config/", args.json_path.split("/")[-1].split(".")[0])
+        self.agent_index = args.agent_index
         self.skill_index = int(self.target_directory[-1])
         self.data = self.read_json()
         self.make_folder(self.target_directory)
@@ -53,34 +55,31 @@ class ConfigManager:
                                                                                       total=len(config_combi)):
             new_data = copy.deepcopy(origin_data)
 
-            new_data['agentConfigs'][self.args.agent_index]['statusConfig']["healthMax"] = [health_V]
-            new_data['agentConfigs'][self.args.agent_index]['statusConfig']["armor"] = [armor_V]
-            new_data['agentConfigs'][self.args.agent_index]['statusConfig']["moveSpeed"] = [move_V]
-            new_data['agentConfigs'][self.args.agent_index]['skillConfigs'][self.skill_index]["cooltime"] = [cool_V]
-            new_data['agentConfigs'][self.args.agent_index]['skillConfigs'][self.skill_index]["range"] = [range_V]
-            new_data['agentConfigs'][self.args.agent_index]['skillConfigs'][self.skill_index]["casttime"] = [cast_V]
-            new_data['agentConfigs'][self.args.agent_index]['skillConfigs'][self.skill_index]["damage"] = [damage_V]
+            new_data['agentConfigs'][self.agent_index]['statusConfig']["healthMax"] = [health_V]
+            new_data['agentConfigs'][self.agent_index]['statusConfig']["armor"] = [armor_V]
+            new_data['agentConfigs'][self.agent_index]['statusConfig']["moveSpeed"] = [move_V]
+            new_data['agentConfigs'][self.agent_index]['skillConfigs'][self.skill_index]["cooltime"] = [cool_V]
+            new_data['agentConfigs'][self.agent_index]['skillConfigs'][self.skill_index]["range"] = [range_V]
+            new_data['agentConfigs'][self.agent_index]['skillConfigs'][self.skill_index]["casttime"] = [cast_V]
+            new_data['agentConfigs'][self.agent_index]['skillConfigs'][self.skill_index]["damage"] = [damage_V]
 
             target_file_name = f'{self.target_directory}/config_{i:05}.json'
             self.write_json(target_file_name, new_data)
 
 
-if __name__ == "__main__":
-    args = parse_args()
-    # Initialize ConfigManager
-    manager = ConfigManager(args)
-
-    # skillConfig0_list = {
-    #     "healthMax": [5000, 22000, 38000, 55000],
-    #     "armor": [18000, 31000, 44000, 58000],
-    #     "moveSpeed": [0.9, 1.1, 1.3, 1.5],
-    #     "cooltime": [0.1, 1.2, 2.4, 3.6],
-    #     "range": [3, 3.6, 4.3, 5],
-    #     "casttime": [0, 1.3, 2.6, 4],
-    #     "damage": [30000, 37000, 45000, 52000],
-    # }
-
-    skillConfig1_list = {
+_skillConfig_combi = {
+    # key: (agent_idx, skill_idx)
+    # value: options to be combined in the config
+    (2, 0): {
+        "healthMax": [5000, 22000, 38000, 55000],
+        "armor": [18000, 31000, 44000, 58000],
+        "moveSpeed": [0.9, 1.1, 1.3, 1.5],
+        "cooltime": [0.1, 1.2, 2.4, 3.6],
+        "range": [3, 3.6, 4.3, 5],
+        "casttime": [0, 1.3, 2.6, 4],
+        "damage": [30000, 37000, 45000, 52000],
+    },
+    (2, 1): {
         "healthMax": [5000, 22000, 38000, 55000],
         "armor": [18000, 31000, 44000, 58000],
         "moveSpeed": [0.9, 1.1, 1.3, 1.5],
@@ -89,6 +88,19 @@ if __name__ == "__main__":
         "casttime": [1.0, 1.7, 2.4, 3.2],
         "damage": [21000, 25000, 30000, 35000]
     }
+}
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    # Initialize ConfigManager
+    manager = ConfigManager(args)
+
+    # Get combinations
+    skillConfig_list = _skillConfig_combi[(manager.agent_index, manager.skill_index)]
+    comb_count = np.prod([len(v) for v in skillConfig_list.values()])
+    print(f"[INFO] Creating {comb_count} configurations for "
+          f"(agent_index={manager.agent_index}, skill_idx={manager.skill_index})")
 
     # Generate configurations
-    manager.generate_configs(skillConfig1_list)
+    manager.generate_configs(skillConfig_list)
