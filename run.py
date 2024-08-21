@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import json
 from decimal import Decimal
+from tqdm import tqdm
 
 BASE_PATH = os.path.dirname(__file__)
 CONFIG_PATH = os.path.join(BASE_PATH, 'config')
@@ -82,28 +83,47 @@ def run_env(config, episode=1000):
     log_path = f' --logPath {LOG_PATH}\\'
 
     process = subprocess.Popen(MMORPG_EXECUTABLE + ' -quit -batchmode -nographics' + config_path + log_path)
-    time.sleep(10)
     log_dir = get_log()
-    while True:
-        if check_log(log_dir, episode):
-            process.terminate()
-            process.wait()
-            return log_dir
-        time.sleep(0.1)
 
+    with tqdm(total=episode, desc="Progress", unit="episode") as pbar:
+        previous_length = 0
+        while True:
+            current_length = check_log_length(log_dir)
+            pbar.update(current_length - previous_length)  # 진행도 업데이트
+            previous_length = current_length
 
-def check_log(log_dir, length=1000):
+            if current_length >= episode:
+                process.terminate()
+                process.wait()
+                return log_dir
+            time.sleep(0.1)
+
+def check_log_length(log_dir):
     file_path = os.path.join(LOG_PATH, log_dir, "gameresult_log.csv")
     gameresult_log = pd.read_csv(file_path, header=None)
     line_count = len(gameresult_log)
-    return line_count >= length
+    return line_count
 
 def get_log():
-    sorted_files = sorted([f for f in os.listdir(LOG_PATH)], reverse=True)
-    if not sorted_files:
-        return False
-    log_dir = sorted_files[0]
-    return log_dir
+    existing_folders = set(os.listdir(LOG_PATH))
+
+    while True:
+        current_folders = set(os.listdir(LOG_PATH))
+        new_folders = current_folders - existing_folders
+
+        if new_folders:
+            new_folder = new_folders.pop()
+            new_folder_path = os.path.join(LOG_PATH, new_folder)
+            required_files = {"combat_log.csv", "gameresult_log.csv"}
+            while True:
+                if required_files.issubset(set(os.listdir(new_folder_path))):
+                    log_time()
+                    print(f"Log directory: {new_folder_path}")
+                    return new_folder_path
+                time.sleep(0.1)
+
+        existing_folders = current_folders
+        time.sleep(1)
 
 def save_result(log_dir, config):
     old_dir_path = os.path.join(LOG_PATH, log_dir)
