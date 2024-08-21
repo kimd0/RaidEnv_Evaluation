@@ -20,8 +20,8 @@ def run_test(attribute, epi_num):
         if os.path.isfile(file_path) and (attribute in file):
             log_time()
             print("Running with", file)
-            run_env(file, epi_num)
-            save_result(file)
+            log_dir = run_env(file, epi_num)
+            save_result(log_dir, file)
     log_time()
     print("Test Done")
     return
@@ -35,6 +35,8 @@ def generate_config(attribute, start, end, step, target_config, target_agent):
         original_value = data['agentConfigs'][target_agent][target_config][attribute]
     elif target_config == "skillConfigs":
         original_value = data['agentConfigs'][target_agent][target_config][0][attribute]
+    else:
+        raise ValueError("Invalid target_config")
 
     if isinstance(original_value, list):
         original_value = original_value[0]
@@ -80,28 +82,30 @@ def run_env(config, episode=1000):
     log_path = f' --logPath {LOG_PATH}\\'
 
     process = subprocess.Popen(MMORPG_EXECUTABLE + ' -quit -batchmode -nographics' + config_path + log_path)
-    time.sleep(10 + episode / 5)
+    time.sleep(10)
+    log_dir = get_log()
     while True:
-        if check_log(episode):
+        if check_log(log_dir, episode):
             process.terminate()
             process.wait()
-            return True
-        time.sleep(0.01)
+            return log_dir
+        time.sleep(0.1)
 
 
-def check_log(length=1000):
-    sorted_files = sorted([f for f in os.listdir(LOG_PATH)], reverse=True)
-    if not sorted_files:
-        return False
-    log_dir = sorted_files[0]
+def check_log(log_dir, length=1000):
     file_path = os.path.join(LOG_PATH, log_dir, "gameresult_log.csv")
     gameresult_log = pd.read_csv(file_path, header=None)
     line_count = len(gameresult_log)
     return line_count >= length
 
+def get_log():
+    sorted_files = sorted([f for f in os.listdir(LOG_PATH)], reverse=True)
+    if not sorted_files:
+        return False
+    log_dir = sorted_files[0]
+    return log_dir
 
-def save_result(config):
-    log_dir = sorted([f for f in os.listdir(LOG_PATH)], reverse=True)[0]
+def save_result(log_dir, config):
     old_dir_path = os.path.join(LOG_PATH, log_dir)
 
     parts = config.split('.')
@@ -132,8 +136,8 @@ if __name__ == '__main__':
     PATH_List = [CONFIG_PATH, LOG_PATH, RESULT_PATH]
     make_folders(PATH_List)
 
-    # generate_config('range', start=3.0, end=12.0, step=0.1, target_config='skillConfigs', target_agent=0)
-    # run_test('range', epi_num=300)
+    # generate_config('range', start=3.0, end=4.0, step=0.1, target_config='skillConfigs', target_agent=0)
+    # run_test('range', epi_num=100)
     #
     # generate_config('casttime', start=0.0, end=10.0, step=0.1, target_config='skillConfigs', target_agent=0)
     # run_test('casttime', epi_num=300)
@@ -144,11 +148,11 @@ if __name__ == '__main__':
     # generate_config('damage', start=0.0, end=5.0, step=0.1, target_config='skillConfigs', target_agent=0)
     # run_test('damage', epi_num=300)
 
-    generate_config('healthMax', start=12350, end=52350, step=1000, target_config="statusConfig", target_agent=2)  # default 32,350
-    run_test('healthMax', epi_num=10)
+    # generate_config('healthMax', start=12350, end=52350, step=1000, target_config="statusConfig", target_agent=2)  # default 32,350
+    # run_test('healthMax', epi_num=10)
 
-    generate_config('armor', start=18476, end=38476, step=500, target_config="statusConfig", target_agent=2)  # default 28,476
-    run_test('armor', epi_num=300)
+    # generate_config('armor', start=18476, end=38476, step=500, target_config="statusConfig", target_agent=2)  # default 28,476
+    # run_test('armor', epi_num=300)
 
-    generate_config('moveSpeed', start=0.3, end=2.0, step=0.05, target_config="statusConfig", target_agent=2)  # default 1
-    run_test('moveSpeed', epi_num=300)
+    # generate_config('moveSpeed', start=0.3, end=2.0, step=0.05, target_config="statusConfig", target_agent=2)  # default 1
+    # run_test('moveSpeed', epi_num=300)
