@@ -7,12 +7,11 @@ import shutil
 from tqdm import tqdm
 import platform
 
+
 def parse_args():
     parser = argparse.ArgumentParser('make gstar_config')
     parser.add_argument('--config_path', type=str, default="./config/dealer_skill1")
     parser.add_argument('--log_path', type=str, default="./log")
-    parser.add_argument('--result_path', type=str, default="./result")
-    parser.add_argument('--build_path', type=str, default="../build")
     parser.add_argument('--build_exe_path', type=str, default='/app/build_linux/MMORPG.x86_64')
     parser.add_argument('--slice_index', type=int, default=0)
     parser.add_argument('--epi_num', type=int, default=100)
@@ -24,12 +23,15 @@ class MMORPGTestRunner:
     def __init__(self, args):
         self.config_path = args.config_path
         self.log_path = args.log_path
-        self.result_path = args.result_path
-        self.build_path = args.build_path
+        self.result_path = os.path.join("/result", args.config_path.split("/")[2])
         self.build_exe_path = args.build_exe_path
         self.slice_index = args.slice_index
         self.epi_num = args.epi_num
         self.os_type = platform.system().lower()
+
+        # make folders
+        folder_list = [self.log_path, self.result_path]
+        self.make_folders(folder_list)
 
     def run_test(self):
 
@@ -50,15 +52,18 @@ class MMORPGTestRunner:
         print("Test Done")
 
     def run_env(self, config, episode=100):
-        env = os.environ
-        newpath = self.build_path + ';' + env['PATH']
-        env['PATH'] = newpath
+
         config_path = ['--configPath', os.path.join(self.config_path, config)]
         log_path = ['--logPath', self.log_path]
+
         if self.os_type == "linux":
             command = [self.build_exe_path, '-quit', '-batchmode', '-nographics']
             command += config_path + log_path
+
         elif self.os_type == "windows":
+            env = os.environ
+            newpath = "../build" + ';' + env['PATH']
+            env['PATH'] = newpath
             command = 'MMORPG.exe' + ' -quit -batchmode -nographics'
             for arg in config_path + log_path:
                 command += ' ' + arg
@@ -115,8 +120,5 @@ if __name__ == '__main__':
     args = parse_args()
     # Initialize the test runner
     test_runner = MMORPGTestRunner(args)
-    # make folders
-    folder_list = [args.log_path, args.result_path]
-    test_runner.make_folders(folder_list)
     # Run the test
     test_runner.run_test()
