@@ -46,8 +46,8 @@ class MMORPGTestRunner:
             if os.path.isfile(file_path):
                 self.log_time()
                 print("Running with", file)
-                self.run_env(file, self.epi_num)
-                self.save_result(file)
+                log_dir = self.run_env(file, self.epi_num)
+                self.save_result(log_dir, file)
         self.log_time()
         print("Test Done")
 
@@ -72,26 +72,49 @@ class MMORPGTestRunner:
 
         # window : MMORPG.exe # linux : MMORPG.x86_64
         process = subprocess.Popen(command)
-        time.sleep(10 + episode / 5)
-        while True:
-            if self.check_log(episode):
-                process.terminate()
-                process.wait()
-                return True
-            time.sleep(0.1)
+        log_dir = self.get_log()
 
-    def check_log(self, length):
-        sorted_files = sorted([f for f in os.listdir(self.log_path)], reverse=True)
-        if not sorted_files:
-            return False
-        log_dir = sorted_files[0]
+        with tqdm(total=episode, desc="Progress", unit="episode") as pbar:
+            previous_length = 0
+            while True:
+                current_length = self.check_log_length(log_dir)
+                pbar.update(current_length - previous_length)  # 진행도 업데이트
+                previous_length = current_length
+
+                if current_length >= episode:
+                    process.terminate()
+                    process.wait()
+                    return log_dir
+                time.sleep(0.1)
+
+    def check_log_length(self, log_dir):
         file_path = os.path.join(self.log_path, log_dir, "gameresult_log.csv")
         gameresult_log = pd.read_csv(file_path, header=None)
         line_count = len(gameresult_log)
-        return line_count >= length
+        return line_count
 
-    def save_result(self, config):
-        log_dir = sorted([f for f in os.listdir(self.log_path)], reverse=True)[0]
+    def get_log(self):
+        existing_folders = set(os.listdir(self.log_path))
+
+        while True:
+            current_folders = set(os.listdir(self.log_path))
+            new_folders = current_folders - existing_folders
+
+            if new_folders:
+                new_folder = new_folders.pop()
+                new_folder_path = os.path.join(self.log_path, new_folder)
+                required_files = {"combat_log.csv", "gameresult_log.csv"}
+                while True:
+                    if required_files.issubset(set(os.listdir(new_folder_path))):
+                        self.log_time()
+                        print(f"Log directory: {new_folder_path}")
+                        return new_folder_path
+                    time.sleep(0.1)
+
+            existing_folders = current_folders
+            time.sleep(0.1)
+
+    def save_result(self, log_dir, config):
         old_dir_path = os.path.join(self.log_path, log_dir)
 
         parts = config.split('.')

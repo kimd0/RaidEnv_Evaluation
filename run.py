@@ -123,7 +123,7 @@ def get_log():
                 time.sleep(0.1)
 
         existing_folders = current_folders
-        time.sleep(1)
+        time.sleep(0.1)
 
 def save_result(log_dir, config):
     old_dir_path = os.path.join(LOG_PATH, log_dir)
