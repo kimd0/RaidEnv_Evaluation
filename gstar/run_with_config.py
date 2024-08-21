@@ -23,7 +23,7 @@ class MMORPGTestRunner:
     def __init__(self, args):
         self.config_path = args.config_path
         self.log_path = args.log_path
-        self.result_path = os.path.join("/result", args.config_path.split("/")[2])
+        self.result_path = os.path.join("./result", args.config_path.split("/")[2])
         self.build_exe_path = args.build_exe_path
         self.slice_index = args.slice_index
         self.epi_num = args.epi_num
