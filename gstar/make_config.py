@@ -20,7 +20,8 @@ def parse_args():
 class ConfigManager:
     def __init__(self, args):
         self.source_file_name = args.json_path
-        self.target_directory = os.path.join("./config/", args.json_path.split("/")[-1].split(".")[0])
+        skill_dir = args.json_path.split("/")[-1].split(".")[0] + str(args.skill_index)
+        self.target_directory = os.path.join("./config/", skill_dir)
         self.agent_index = args.agent_index
         self.skill_index = args.skill_index
         self.data = self.read_json()
