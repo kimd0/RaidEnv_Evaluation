@@ -70,7 +70,7 @@ class MMORPGTestRunner:
         else:
             raise ValueError("Unsupported OS type, only support windows and linux")
 
-        process = subprocess.Popen(command)
+        process = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         log_dir = self.get_log()
 
         with tqdm(total=episode, desc="Progress", unit="episode") as pbar:
@@ -105,10 +105,26 @@ class MMORPGTestRunner:
                 new_folder_path = os.path.join(self.log_path, new_folder)
                 required_files = {"combat_log.csv", "gameresult_log.csv"}
                 while True:
-                    if required_files.issubset(set(os.listdir(new_folder_path))):
-                        self.log_time()
-                        print(f"Log directory: {new_folder_path}")
-                        return new_folder_path
+                    current_files = set(os.listdir(new_folder_path))
+                    if required_files.issubset(current_files):
+                        all_files_valid = True
+                        for file in required_files:
+                            file_path = os.path.join(new_folder_path, file)
+                            try:
+                                with open(file_path, 'r') as f:
+                                    if f.readline():
+                                        continue
+                                    else:
+                                        all_files_valid = False
+                                        break
+                            except IOError:
+                                all_files_valid = False
+                                break
+
+                        if all_files_valid:
+                            self.log_time()
+                            print(f"Log directory: {new_folder_path}")
+                            return new_folder_path
                     time.sleep(0.1)
 
             existing_folders = current_folders
