@@ -10,6 +10,7 @@ from sklearn.cluster import KMeans
 def parse_args():
     parser = argparse.ArgumentParser('postprocess summary')
     parser.add_argument('--result_dir', type=str, required=True)
+    parser.add_argument('--method', type=str, required=True, choices=['nearest', 'uniform'])
     parser.add_argument('--k', type=int, default=7)
     parser.add_argument('--n', type=int, default=1, help='Number of presidents to select')
 
@@ -34,8 +35,15 @@ def main(args):
     presidents = []
     for i in range(args.k):
         samples_in_cluster = scaled_df[clusters == i].to_numpy()
-        distance = np.linalg.norm(samples_in_cluster - centers[i], axis=1)
-        nearest = np.argsort(distance)[:args.n]
+        if args.method == 'uniform':
+            nearest = np.random.choice(samples_in_cluster.shape[0], args.n, replace=False)
+            presidents.append(nearest)
+        elif args.method == 'nearest':
+            distance = np.linalg.norm(samples_in_cluster - centers[i], axis=1)
+            nearest = np.argsort(distance)[:args.n]
+            presidents.append(nearest)
+        else:
+            raise ValueError(f"Invalid method: {args.method}")
         presidents.append(nearest)
 
     # Print presidents
