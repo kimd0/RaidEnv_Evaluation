@@ -9,6 +9,7 @@ from sklearn.cluster import KMeans
 
 def parse_args():
     parser = argparse.ArgumentParser('postprocess summary')
+    parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--result_dir', type=str, required=True)
     parser.add_argument('--method', type=str, required=True, choices=['nearest', 'uniform'])
     parser.add_argument('--k', type=int, default=7)
@@ -36,12 +37,11 @@ def main(args):
     for i in range(args.k):
         samples_in_cluster = scaled_df[clusters == i].to_numpy()
         if args.method == 'uniform':
-            nearest = np.random.choice(samples_in_cluster.shape[0], args.n, replace=False)
-            presidents.append(nearest)
+            nearest_indices = np.random.choice(samples_in_cluster.shape[0], args.n, replace=False)
+            nearest = np.array([np.where(clusters == i)[0][j] for j in nearest_indices])
         elif args.method == 'nearest':
             distance = np.linalg.norm(samples_in_cluster - centers[i], axis=1)
             nearest = np.argsort(distance)[:args.n]
-            presidents.append(nearest)
         else:
             raise ValueError(f"Invalid method: {args.method}")
         presidents.append(nearest)
@@ -69,4 +69,5 @@ _columns = ['healthMax', 'armor', 'moveSpeed', 'cooltime', 'range', 'casttime', 
 
 if __name__ == '__main__':
     args = parse_args()
+    np.random.seed(args.seed)
     main(args)

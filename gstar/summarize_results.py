@@ -68,15 +68,16 @@ def main(args):
 
     for d in tqdm(os.listdir(args.result_dir)):
         result_path = os.path.join(args.result_dir, d)
+        config_number = int(d.split('_')[-1])
         healthMax, armor, moveSpeed, cooltime, range, casttime, damage = get_skill_parameters(result_path, args.agent_index, args.skill_index)
         win_rate, episode_length, dealt, taken, count = analysis_log(result_path, args.epi_num)
         df.append([healthMax, armor, moveSpeed,
                    cooltime, range, casttime, damage,
-                   win_rate, episode_length, dealt, taken, count])
+                   win_rate, episode_length, dealt, taken, config_number, count])
 
     return pd.DataFrame(df, columns=['healthMax', 'armor', 'moveSpeed',
                                      'cooltime', 'range', 'casttime', 'damage',
-                                     'win_rate', 'episode_length', 'dealt', 'taken', 'count'])
+                                     'win_rate', 'episode_length', 'dealt', 'taken', 'config_number', 'count'])
 
 
 if __name__ == '__main__':
