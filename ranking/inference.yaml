@@ -51,14 +51,13 @@ env_settings:
       --maEvalEpisodeLimit,
       100
     ]
-#  env_path: /app/MMORPG/2024/MA/Build/Build_linux_toy_hard_hetero_gstar/MMORPG.x86_64
-  env_path: Z:/MMORPG/2024/MA/Build/Build_window_gstar/MMORPG.exe
+  env_path: /app/MMORPG/2024/MA/Build/Build_linux_toy_hard_hetero_gstar/MMORPG.x86_64
   max_lifetime_restarts: 0
   num_envs: 1
 
-#engine_settings:
-#  time_scale: 20
-#  no_graphics: true
+engine_settings:
+  time_scale: 20
+  no_graphics: true
 
 checkpoint_settings:
   run_id: temp
