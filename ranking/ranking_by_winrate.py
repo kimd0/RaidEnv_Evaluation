@@ -1,6 +1,6 @@
 import argparse
 import os
-from collections import defaultdict
+import numpy as np
 import pandas as pd
 
 from ranking.const import ROLES, TARGET_WINRATES, METHODS
@@ -26,10 +26,11 @@ def get_winrate(result_dir: str, epi_num: int):
 
 def main(args):
     # Load results
-    winrates = defaultdict(list)
+    winrates = dict()
     for method in args.methods:
         result_dir = os.path.join(args.result_dir, f"{ROLES[args.agent_index]}_{args.skill_index}", method)
 
+        winrate_by_target = dict()
         for target_winrate in TARGET_WINRATES:
             result_path = os.path.join(result_dir, f"WinRate_{target_winrate}")
 
@@ -37,12 +38,17 @@ def main(args):
                 dir_path = os.path.join(result_path, dir_name)
 
                 winrate = get_winrate(dir_path, args.epi_num)
-                winrates[method].append(winrate)
+                winrate_by_target[target_winrate] = winrate
+        winrates[method] = winrate_by_target
 
     # Show ranking
     print("Ranking by winrate")
-    for method, winrate in sorted(winrates.items(), key=lambda x: -sum(x[1])):
-        print(f"{method}: {sum(winrate)/len(winrate):.2f}% for {len(winrate)} configs")
+    sorted_winrates = sorted(winrates.items(), key=lambda x: -sum(x[1].values()))
+    for method, winrate_by_target in sorted_winrates:
+        print(f"{method}:")
+        for target_winrate, winrate in winrate_by_target.items():
+            print(f"{target_winrate}: {winrate}%")
+        print(f"Average: {np.mean(list(winrate_by_target.values())):04.1f}% \n")
 
 
 if __name__ == '__main__':
