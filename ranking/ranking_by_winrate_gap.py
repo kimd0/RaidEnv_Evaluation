@@ -1,5 +1,6 @@
 import argparse
 import os
+from collections import defaultdict
 import numpy as np
 import pandas as pd
 
@@ -30,7 +31,7 @@ def main(args):
     for method in args.methods:
         result_dir = os.path.join(args.result_dir, f"{ROLES[args.agent_index]}_{args.skill_index}", method)
 
-        l1_distance_by_target = dict()
+        l1_distance_by_target = defaultdict(list)
         for target_winrate in TARGET_WINRATES:
             result_path = os.path.join(result_dir, f"WinRate_{target_winrate}")
 
@@ -38,8 +39,8 @@ def main(args):
                 dir_path = os.path.join(result_path, dir_name)
 
                 l1_distance = abs(get_winrate(dir_path, args.epi_num) - target_winrate * 100)
-                l1_distance_by_target[target_winrate] = l1_distance
-        l1_distances[method] = l1_distance_by_target
+                l1_distance_by_target[target_winrate].append(l1_distance)
+        l1_distances[method] = {k: np.mean(v) for k, v in l1_distance_by_target.items()}
 
     # Show ranking
     print("Ranking by winrate gap")

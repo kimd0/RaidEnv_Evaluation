@@ -1,5 +1,6 @@
 import argparse
 import os
+from collections import defaultdict
 import numpy as np
 import pandas as pd
 
@@ -30,7 +31,7 @@ def main(args):
     for method in args.methods:
         result_dir = os.path.join(args.result_dir, f"{ROLES[args.agent_index]}_{args.skill_index}", method)
 
-        winrate_by_target = dict()
+        winrate_by_target = defaultdict(list)
         for target_winrate in TARGET_WINRATES:
             result_path = os.path.join(result_dir, f"WinRate_{target_winrate}")
 
@@ -38,8 +39,8 @@ def main(args):
                 dir_path = os.path.join(result_path, dir_name)
 
                 winrate = get_winrate(dir_path, args.epi_num)
-                winrate_by_target[target_winrate] = winrate
-        winrates[method] = winrate_by_target
+                winrate_by_target[target_winrate].append(winrate)
+        winrates[method] = {k: np.mean(v) for k, v in winrate_by_target.items()}
 
     # Show ranking
     print("Ranking by winrate")
