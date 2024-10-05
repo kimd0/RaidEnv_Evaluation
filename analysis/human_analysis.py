@@ -79,6 +79,10 @@ class LogAnalysis:
         position_diff_epi['y_diff'] = merged_new['Position_y_patchwerk'] - merged_new['Position_y_melee']
         position_diff_epi['z_diff'] = merged_new['Position_z_patchwerk'] - merged_new['Position_z_melee']
 
+        position_diff_epi['x_diff'] = position_diff_epi['x_diff'].abs()
+        position_diff_epi['y_diff'] = position_diff_epi['y_diff'].abs()
+        position_diff_epi['z_diff'] = position_diff_epi['z_diff'].abs()
+
         episode_diff_mean_df = position_diff_epi.groupby('episodeLogcount').mean().reset_index()
 
         return episode_diff_mean_df
