@@ -8,4 +8,7 @@
 /config
 /log
 /result
-/analysis
+/analysis/human_data
+/analysis/result
+/eval_pcg_configs/results
+/eval_pcg_configs/results_rulebased
