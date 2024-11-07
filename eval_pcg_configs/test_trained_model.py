@@ -74,7 +74,7 @@ def run_mlagents(options, model_path, config_path, save_path, run_seed, n_episod
                     break
                 time.sleep(1)
 
-    threading.Thread(target=update_progress).start()
+    progress_thread = threading.Thread(target=update_progress, daemon=True).start()
 
     # Change base_port
     options.env_settings.base_port = 5004 + run_seed
@@ -102,6 +102,9 @@ def run_mlagents(options, model_path, config_path, save_path, run_seed, n_episod
             logger.critical(f"Error occurred. Please check --model_dir: {model_dir} or --model_name: {model_name}")
         else:
             logger.critical(f"Error occurred during training: {e}")
+
+    if progress_thread.is_alive():
+        progress_thread.join()
 
     # Save config file and log files
     log_dir = get_log_dir()
