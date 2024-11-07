@@ -1,8 +1,11 @@
 import argparse
-import time
 from tqdm import tqdm
 import os
 import numpy as np
+import pandas as pd
+import shutil
+import time
+import threading
 
 from mlagents import torch_utils
 import mlagents.trainers
@@ -49,8 +52,30 @@ def prepare_mlagents(options):
 
     return run_seed
 
-
 def run_mlagents(options, model_path, config_path, save_path, run_seed, n_episodes):
+    def get_log_dir():
+        while True:
+            try:
+                log_subdir = os.listdir(save_path)[0]  # Get the first subdirectory in save_path
+                log_dir_path = os.path.join(save_path, log_subdir)
+                if os.path.isdir(log_dir_path) and check_log_length(log_dir_path) > 0:
+                    return log_dir_path
+            except (FileNotFoundError, IndexError):
+                time.sleep(1)
+
+    def update_progress():
+        log_dir = get_log_dir()
+        with tqdm(total=n_episodes, desc=f"{os.path.basename(config_path).split('.')[0]}", position=1, unit="episode(s)", leave=False) as inner_pbar:
+            while True:
+                progress = check_log_length(log_dir)
+                inner_pbar.n = progress
+                inner_pbar.refresh()
+                if progress >= n_episodes:
+                    break
+                time.sleep(1)
+
+    threading.Thread(target=update_progress).start()
+
     # Change base_port
     options.env_settings.base_port = 5004 + run_seed
 
@@ -78,40 +103,43 @@ def run_mlagents(options, model_path, config_path, save_path, run_seed, n_episod
         else:
             logger.critical(f"Error occurred during training: {e}")
 
-    # Move log files
-    temp_dir = os.path.join(save_path, os.listdir(save_path)[0])
-    file_names = ["combat_log.csv", "gameresult_log.csv", "movement_log.csv"]
-    for file_name in file_names:
-        src = os.path.join(temp_dir, file_name)
-        dst = os.path.join(save_path, file_name)
-        os.rename(src, dst)
-    os.rmdir(temp_dir)
+    # Save config file and log files
+    log_dir = get_log_dir()
+    while True:
+        try:
+            shutil.copy(src=config_path, dst=save_path)
+            [shutil.move(os.path.join(log_dir, item), save_path) for item in os.listdir(log_dir)]
+            shutil.rmtree(log_dir)
+            break
+        except Exception as e:
+            time.sleep(0.1)
 
+def check_log_length(log_dir):
+    file_path = os.path.join(log_dir, "gameresult_log.csv")
+    try:
+        gameresult_log = pd.read_csv(file_path, header=None)
+        line_count = len(gameresult_log)
+    except (FileNotFoundError, pd.errors.EmptyDataError):
+        line_count = 0
+    return line_count
 
 def main(args):
     options = parse_command_line([args.base_yaml])
     run_seed = prepare_mlagents(options)
 
     # Set model_dir
-    # model_dir = os.path.join(args.model_path, f"agent_{args.agent_index}_skill{args.skill_index}")
     model_dir = os.path.join(args.model_path, f"agent{args.agent_index}_skill{args.skill_index}_run0")
 
-    for config_number in tqdm(range(NUM_CONFIGS)):
-        config_path = os.path.join(
-            args.config_path, f"WinRate_{args.target_winrate}", f"config_{config_number}.json")
-        save_path = os.path.join(
-            args.save_path, f"agent{args.agent_index}_skill{args.skill_index}",
-            f"WinRate_{args.target_winrate}", f"config_{config_number}")
+    # Get config files
+    config_list = sorted(os.listdir(args.config_path), key=lambda x: int(x.split('_')[1].split('.')[0]))
 
-        # Run mlagents
-        run_mlagents(options, model_dir, config_path, save_path, run_seed, args.epi_num)
-
-        # Wait for 5 seconds
-        time.sleep(5)
-
-
-NUM_CONFIGS = 20
-
+    with tqdm(total=len(config_list), desc="Test Progress", position=0, unit="config(s)", leave=True) as pbar:
+        for file in config_list:
+            config_path = os.path.join(args.config_path, file)
+            save_path = os.path.join(args.save_path, f"agent{args.agent_index}_skill{args.skill_index}",
+                                     os.path.basename(args.config_path), file.split('.')[0])
+            run_mlagents(options, model_dir, config_path, save_path, run_seed, args.epi_num)
+            pbar.update(1)
 
 if __name__ == '__main__':
     args = parse_args()

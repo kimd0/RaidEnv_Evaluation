@@ -6,6 +6,7 @@ import argparse
 import shutil
 from tqdm import tqdm
 import platform
+import secrets
 
 
 def parse_args():
@@ -57,23 +58,23 @@ class MMORPGTestRunner:
 
         self.pbar = tqdm(total=len(config_list_to_run))
         for i, file in enumerate(config_list_to_run):
-            self.pbar.set_description(file)
+            run_id = secrets.token_hex(16)
+            self.pbar.set_description(f"{file.split('.')[0]} ({run_id})")
             file_path = os.path.join(self.config_path, file)
 
             if os.path.isfile(file_path):
                 if self.verbose == 'debug':
                     log_time()
-                log_dir = self.run_env(file, self.epi_num)
+                log_dir = self.run_env(file, run_id, self.epi_num)
                 self.save_result(log_dir, file)
-                shutil.rmtree(os.path.join(self.log_path, file.split('.')[0]))
+                shutil.rmtree(os.path.dirname(log_dir))
             self.pbar.update(1)
         log_time()
         print("Test Done")
 
-    def run_env(self, config, episode=100):
-
+    def run_env(self, config, run_id, episode=100):
         config_path = ['--configPath', os.path.join(self.config_path, config)]
-        log_path = ['--logPath', os.path.join(self.log_path, config.split('.')[0])]
+        log_path = ['--logPath', os.path.join(self.log_path, config.split('.')[0] + "_" + run_id)]
 
         if self.os_type == "linux":
             command = [self.build_exe_path, '-quit', '-batchmode', '-nographics']
@@ -104,8 +105,13 @@ class MMORPGTestRunner:
     @staticmethod
     def check_log_length(log_dir):
         file_path = os.path.join(log_dir, "gameresult_log.csv")
-        gameresult_log = pd.read_csv(file_path, header=None)
-        line_count = len(gameresult_log)
+        try:
+            gameresult_log = pd.read_csv(file_path, header=None)
+            line_count = len(gameresult_log)
+        except FileNotFoundError:
+            line_count = 0
+        except pd.errors.EmptyDataError:
+            line_count = 0
         return line_count
 
     @staticmethod
