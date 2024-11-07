@@ -74,7 +74,8 @@ def run_mlagents(options, model_path, config_path, save_path, run_seed, n_episod
                     break
                 time.sleep(1)
 
-    progress_thread = threading.Thread(target=update_progress, daemon=True).start()
+    progress_thread = threading.Thread(target=update_progress, daemon=True)
+    progress_thread.start()
 
     # Change base_port
     options.env_settings.base_port = 5004 + run_seed
